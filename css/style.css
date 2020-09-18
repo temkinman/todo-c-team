@@ -1,0 +1,112 @@
+body {
+  height: 100%;
+  margin: 0;
+}
+
+.container {
+  display: flex;
+  margin: 0 auto;
+  flex-direction: column;
+  width: 600px;
+  background-color: lightblue;
+}
+
+h1 {
+  color: white;
+  font-family: monospace;
+  font-size: 4em;
+}
+
+.add-todo {
+  display: flex;
+  margin: 15px;
+  height: 35px;
+}
+
+.todo-input {
+  flex: 1 1 0;
+  padding: 10px 5px;
+  font-size: 1.3em;
+  color: darkslategrey;
+  border: 1px solid gray;
+  border-radius: 5px;
+  outline: none;
+  margin-right: 5px;
+}
+
+.todo-input:focus {
+  border: 1px solid blue;
+}
+
+.add-button {
+  flex: 0 0 110px;
+  border-radius: 5px;
+  border: 1px solid gray;
+  font-size: 1.3em;
+  cursor: pointer;
+}
+
+.add-button:hover {
+  background-color: gray;
+  color: white;
+  transition: 1s;
+}
+
+.top-todo {
+  display: flex;
+  overflow: auto;
+  flex-direction: column;
+  text-align: center;
+}
+.todos ul {
+  margin: 15px;
+  padding: 0;
+  list-style: none;
+  max-width: 95%;
+}
+
+.todo-added {
+  display: flex;
+  align-items: center;
+  background-color: #3c414152;
+  margin-bottom: 5px;
+  font-size: 22px;
+  padding: 10px;
+  color: white;
+  border: 2px solid #08120e1f;
+  border-radius: 8px;
+
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.todo-added:hover {
+  transition: 1s;
+  box-shadow: 5px 6px 1px rgba(0, 0, 0, 0.3);
+}
+
+.todo-added:hover .delete {
+  visibility: visible;
+}
+
+.todo-added input {
+  margin-bottom: 0;
+  margin-right: 10px;
+}
+.delete {
+  visibility: hidden;
+  width: 15px;
+  cursor: pointer;
+  flex: 0 0 17px;
+  margin-left: auto;
+}
+
+.show-diff-todos {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.show-diff-todos button {
+  margin-right: 5px;
+}

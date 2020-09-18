@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="./css/style.css" />
+    <title>Todo list</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="top-todo">
+        <h1>Todo list</h1>
+        <div class="add-todo">
+          <input type="text" class="todo-input" placeholder="type todo" />
+          <button class="add-button">add</button>
+        </div>
+      </div>
+      <div class="todos">
+        <ul>
+          <li class="todo-added">
+            <input type="checkbox" />
+            <span>сходить в магазин</span>
+            <img src="./images/trash-alt-solid.svg" alt="" class="delete" />
+          </li>
+          <li class="todo-added">
+            <input type="checkbox" />
+            <span>приготовить обед</span>
+            <img src="./images/trash-alt-solid.svg" alt="" class="delete" />
+          </li>
+          <li class="todo-added">
+            <input type="checkbox" />
+            <span>помыть машину</span>
+            <img src="./images/trash-alt-solid.svg" alt="" class="delete" />
+          </li>
+        </ul>
+      </div>
+      <div class="show-diff-todos">
+        <button class="add-button">active</button>
+        <button class="add-button">completed</button>
+        <button class="add-button">all</button>
+      </div>
+    </div>
+    <script src="./js/myscript.js"></script>
+  </body>
+</html>
