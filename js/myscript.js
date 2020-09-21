@@ -1,10 +1,13 @@
-"use strict";
-let globalID = 3;
+let globalID = 0;
 
-const todoList = [
-  { id: 1, title: "learning JS", isComplete: false },
-  { id: 2, title: "learning HTML", isComplete: true },
-  { id: 3, title: "learning CSS", isComplete: false },
+function getId() {
+  return ++globalID;
+}
+
+let todoList = [
+  { id: getId(), title: "learning JS", isComplete: false },
+  { id: getId(), title: "learning HTML", isComplete: true },
+  { id: getId(), title: "learning CSS", isComplete: false },
 ];
 
 document.getElementById("add-todo").addEventListener("click", addTodo);
@@ -29,15 +32,10 @@ document.body.addEventListener(
   false
 );
 
-function getId() {
-  return ++globalID;
-}
-
 function addTodo() {
-  const newTodo = document.getElementById("newTodo").value;
-  const todo = { id: getId(), title: newTodo, isComplete: false };
-
-  todoList.push(todo);
+  const newTodoTitle = document.getElementById("newTodo").value;
+  const todo = { id: getId(), title: newTodoTitle, isComplete: false };
+  todoList = [...todoList, todo];
   todosContainer.appendChild(prepareForRenderTodo(todo));
 }
 
@@ -46,13 +44,15 @@ function prepareForRenderTodo(todo) {
 
   li.classList.add("todo-added");
   li.setAttribute("index", todo.id);
-  li.innerHTML = `<input type="checkbox" class="complete" ${
-    todo.isComplete ? "checked" : ""
-  } />
-                    <span class="comp ${todo.isComplete ? "strikeout" : ""}">${
-    todo.title
-  }</span>
-                    <img src="./images/trash-alt-solid.svg" alt="" class="delete" />`;
+  li.innerHTML = `
+    <input type="checkbox" class="complete" ${
+      todo.isComplete ? "checked" : ""
+    } />
+    <span class="comp ${todo.isComplete ? "strikeout" : ""}">
+      ${todo.title}
+    </span>
+    <img src="./images/trash-alt-solid.svg" alt="" class="delete" />
+  `;
   return li;
 }
 
@@ -66,14 +66,14 @@ function showAllTodos() {
 function showActiveTodos() {
   clearAllTodos();
   todoList
-    .filter((todo) => todo.isComplete == false)
+    .filter((todo) => todo.isComplete === false)
     .forEach((todo) => todosContainer.appendChild(prepareForRenderTodo(todo)));
 }
 
 function showCompleteTodos() {
   clearAllTodos();
   todoList
-    .filter((todo) => todo.isComplete == true)
+    .filter((todo) => todo.isComplete === true)
     .forEach((todo) => todosContainer.appendChild(prepareForRenderTodo(todo)));
 }
 
@@ -89,35 +89,29 @@ function removeFromView(e) {
 }
 
 function removeTodo(todoId) {
-  const index = todoList.findIndex((todo) => todo.id === todoId);
-  if (index == -1) {
-    throw new Error("Id not found");
-  }
-  todoList.splice(index, 1);
+  todoList = todoList.filter(({ id }) => id !== todoId);
 }
 
 function changeTodoTitle(todoId, newTitle) {
-  arr[todoId].title = newTitle;
-  const index = todoList.findIndex((todo) => todo.id === todoId);
-  if (index == -1) {
-    throw new Error("Id not found");
-  }
-  todoList[index].title = newTitle;
+  todoList = todoList.map((todo) =>
+    todo.id === todoId ? { ...todo, title: newTitle } : todo
+  );
 }
 
 function changeTodoStatusView(e) {
   const todo = e.target.parentElement;
   const todoId = +todo.getAttribute("index");
   const isComplete = e.target.checked;
-  isComplete ? e.target.nextElementSibling.classList.add('strikeout'):
-                e.target.nextElementSibling.classList.remove('strikeout');
+  if (isComplete) {
+    e.target.nextElementSibling.classList.add("strikeout");
+  } else {
+    e.target.nextElementSibling.classList.remove("strikeout");
+  }
   changeTodoStatus(todoId, isComplete);
 }
 
 function changeTodoStatus(todoId, isComplete) {
-  const index = todoList.findIndex((todo) => todo.id === todoId);
-  if (index === -1) {
-    throw new Error("Id not found");
-  }
-  todoList[index].isComplete = isComplete;
+  todoList = todoList.map((todo) =>
+    todo.id === todoId ? { ...todo, isComplete } : todo
+  );
 }
