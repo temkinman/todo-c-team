@@ -12,13 +12,13 @@
       <div class="top-todo">
         <h1>Todo list</h1>
         <div class="add-todo">
-          <input type="text" class="todo-input" placeholder="type todo" />
-          <button class="add-button">add</button>
+          <input type="text" class="todo-input" placeholder="type todo" id="newTodo" minlength = 3/>
+          <button class="add-button" id="add-todo">add</button>
         </div>
       </div>
       <div class="todos">
-        <ul>
-          <li class="todo-added">
+        <ul id="todos-list">
+          <!-- <li class="todo-added">
             <input type="checkbox" />
             <span>сходить в магазин</span>
             <img src="./images/trash-alt-solid.svg" alt="" class="delete" />
@@ -32,13 +32,13 @@
             <input type="checkbox" />
             <span>помыть машину</span>
             <img src="./images/trash-alt-solid.svg" alt="" class="delete" />
-          </li>
+          </li> -->
         </ul>
       </div>
       <div class="show-diff-todos">
-        <button class="add-button">active</button>
-        <button class="add-button">completed</button>
-        <button class="add-button">all</button>
+        <button class="add-button" id="active">active</button>
+        <button class="add-button" id="complete" >completed</button>
+        <button class="add-button" id="all">all</button>
       </div>
     </div>
     <script src="./js/myscript.js"></script>

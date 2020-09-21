@@ -110,3 +110,25 @@ h1 {
 .show-diff-todos button {
   margin-right: 5px;
 }
+
+.todo-added input:checked + span{
+  text-decoration:line-through;
+}
+
+.strikeout {
+  position: relative;
+}
+.strikeout::after {
+  border-bottom: 0.125em solid rgba(5, 10, 214, 1);
+  content: "";
+  left: 0;
+  line-height: 1em;
+  margin-top: calc(0.125em / 2 * -1);
+  position: absolute;
+  right: 0;
+  top: 50%;
+}
+
+.todo-input:invalid {
+  border: 2px solid red;
+}
