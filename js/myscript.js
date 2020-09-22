@@ -1,13 +1,15 @@
-"use strict";
-let globalID = 3;
+const getId = (() => {
+  let globalID = 0;
+  return () => (globalID += 1);
+})();
 
-const todoList = [
-  { id: 1, title: "learning JS", isComplete: false },
-  { id: 2, title: "learning HTML", isComplete: true },
-  { id: 3, title: "learning CSS", isComplete: false },
+let todoList = [
+  { id: getId(), title: "learning JS", isComplete: false },
+  { id: getId(), title: "learning HTML", isComplete: false },
+  { id: getId(), title: "learning CSS", isComplete: false },
 ];
 
-document.getElementById("add-todo").addEventListener("click", addTodo);
+document.getElementById("add-todo").addEventListener("click", prepareTodo);
 document.getElementById("active").addEventListener("click", showActiveTodos);
 document
   .getElementById("complete")
@@ -29,16 +31,17 @@ document.body.addEventListener(
   false
 );
 
-function getId() {
-  return ++globalID;
+function prepareTodo(){
+  const newTodoTitle = document.getElementById("newTodo").value;
+  if (newTodoTitle === "") return;
+  
+  const todo = { id: getId(), title: newTodoTitle, isComplete: false };
+  todoList = addTodo(todo, todoList);
 }
 
-function addTodo() {
-  const newTodo = document.getElementById("newTodo").value;
-  const todo = { id: getId(), title: newTodo, isComplete: false };
-
-  todoList.push(todo);
+function addTodo(todo, todoList) {
   todosContainer.appendChild(prepareForRenderTodo(todo));
+  return [...todoList, todo];
 }
 
 function prepareForRenderTodo(todo) {
@@ -46,78 +49,63 @@ function prepareForRenderTodo(todo) {
 
   li.classList.add("todo-added");
   li.setAttribute("index", todo.id);
-  li.innerHTML = `<input type="checkbox" class="complete" ${
-    todo.isComplete ? "checked" : ""
-  } />
-                    <span class="comp ${todo.isComplete ? "strikeout" : ""}">${
-    todo.title
-  }</span>
+  li.innerHTML = `<input type="checkbox" class="complete" ${todo.isComplete ? "checked" : ""}/>
+                    <span class="comp ${todo.isComplete ? "strikeout" : ""}">${todo.title}</span>
                     <img src="./images/trash-alt-solid.svg" alt="" class="delete" />`;
   return li;
 }
 
+function removeFromView(e) {
+  const todoView = e.target.parentElement;
+  const todoId = +todoView.getAttribute("index");
+  todoView.remove();
+  todoList = removeTodo(todoId, todoList);
+}
+
+function removeTodo(todoId, todoList) {
+  return todoList.filter(todoItem => todoItem.id !== todoId);
+}
+
+function changeTodoStatusView(e) {
+  const todoView = e.target.parentElement;
+  const todoId = +todoView.getAttribute("index");
+  const isComplete = e.target.checked;
+
+  if (isComplete){
+    e.target.nextElementSibling.classList.add("strikeout");
+  }
+  else {
+    e.target.nextElementSibling.classList.remove("strikeout");
+  }
+    
+  todoList = changeTodoStatus(todoId, isComplete, todoList);
+}
+
+function changeTodoStatus(todoId, isComplete, todoList) {
+  return todoList.map(todoItem => todoItem.id === todoId ? {...todoItem, isComplete} : todoItem)
+}
+
 function showAllTodos() {
   clearAllTodos();
-  todoList.forEach((todo) =>
-    todosContainer.appendChild(prepareForRenderTodo(todo))
+  todoList.forEach((todoItem) =>
+    todosContainer.appendChild(prepareForRenderTodo(todoItem))
   );
 }
 
 function showActiveTodos() {
   clearAllTodos();
   todoList
-    .filter((todo) => todo.isComplete == false)
-    .forEach((todo) => todosContainer.appendChild(prepareForRenderTodo(todo)));
+    .filter((todoItem) => todoItem.isComplete == false)
+    .forEach((todoItem) => todosContainer.appendChild(prepareForRenderTodo(todoItem)));
 }
 
 function showCompleteTodos() {
   clearAllTodos();
   todoList
-    .filter((todo) => todo.isComplete == true)
-    .forEach((todo) => todosContainer.appendChild(prepareForRenderTodo(todo)));
+    .filter((todoItem) => todoItem.isComplete == true)
+    .forEach((todoItem) => todosContainer.appendChild(prepareForRenderTodo(todoItem)));
 }
 
 function clearAllTodos() {
   todosContainer.innerHTML = "";
-}
-
-function removeFromView(e) {
-  const todo = e.target.parentElement;
-  const todoId = +todo.getAttribute("index");
-  todo.remove();
-  removeTodo(todoId);
-}
-
-function removeTodo(todoId) {
-  const index = todoList.findIndex((todo) => todo.id === todoId);
-  if (index == -1) {
-    throw new Error("Id not found");
-  }
-  todoList.splice(index, 1);
-}
-
-function changeTodoTitle(todoId, newTitle) {
-  arr[todoId].title = newTitle;
-  const index = todoList.findIndex((todo) => todo.id === todoId);
-  if (index == -1) {
-    throw new Error("Id not found");
-  }
-  todoList[index].title = newTitle;
-}
-
-function changeTodoStatusView(e) {
-  const todo = e.target.parentElement;
-  const todoId = +todo.getAttribute("index");
-  const isComplete = e.target.checked;
-  isComplete ? e.target.nextElementSibling.classList.add('strikeout'):
-                e.target.nextElementSibling.classList.remove('strikeout');
-  changeTodoStatus(todoId, isComplete);
-}
-
-function changeTodoStatus(todoId, isComplete) {
-  const index = todoList.findIndex((todo) => todo.id === todoId);
-  if (index === -1) {
-    throw new Error("Id not found");
-  }
-  todoList[index].isComplete = isComplete;
 }

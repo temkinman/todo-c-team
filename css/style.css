@@ -7,14 +7,14 @@ body {
   display: flex;
   margin: 0 auto;
   flex-direction: column;
-  width: 600px;
+  max-width: 600px;
   background-color: lightblue;
 }
 
-h1 {
+.name-app{
   color: white;
   font-family: monospace;
-  font-size: 4em;
+  font-size: 4rem;
 }
 
 .add-todo {
@@ -26,7 +26,7 @@ h1 {
 .todo-input {
   flex: 1 1 0;
   padding: 10px 5px;
-  font-size: 1.3em;
+  font-size: 1.3rem;
   color: darkslategrey;
   border: 1px solid gray;
   border-radius: 5px;
@@ -42,14 +42,14 @@ h1 {
   flex: 0 0 110px;
   border-radius: 5px;
   border: 1px solid gray;
-  font-size: 1.3em;
+  font-size: 1.3rem;
   cursor: pointer;
 }
 
 .add-button:hover {
   background-color: gray;
   color: white;
-  transition: 1s;
+  transition: .5s;
 }
 
 .top-todo {
@@ -58,11 +58,12 @@ h1 {
   flex-direction: column;
   text-align: center;
 }
-.todos ul {
-  margin: 15px;
-  padding: 0;
+.todos-list {
+  margin: 0;
+  padding: 0px 15px;
   list-style: none;
-  max-width: 95%;
+  max-height: 440px;
+  overflow: auto;
 }
 
 .todo-added {
@@ -75,13 +76,11 @@ h1 {
   color: white;
   border: 2px solid #08120e1f;
   border-radius: 8px;
-
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out;
 }
 
 .todo-added:hover {
-  transition: 1s;
   box-shadow: 5px 6px 1px rgba(0, 0, 0, 0.3);
 }
 
@@ -107,14 +106,36 @@ h1 {
   padding: 20px;
 }
 
-.show-diff-todos button {
+.mr-5 {
   margin-right: 5px;
 }
+
+/*scroll bar start*/
+::-webkit-scrollbar {
+  width: 15px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  flex: 0 0 10px;
+  background: #0f1f1f7d; 
+  border-radius: 5px;
+  height: 10px;
+  border: 4px solid rgba(0, 0, 0, 0);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #050e0ea6; 
+}
+/*scroll bar end*/
 
 .todo-added input:checked + span{
   text-decoration:line-through;
 }
-
 .strikeout {
   position: relative;
 }
@@ -128,7 +149,26 @@ h1 {
   right: 0;
   top: 50%;
 }
-
 .todo-input:invalid {
   border: 2px solid red;
+}
+
+@media screen and (max-width: 405px) {
+  .add-button {
+    flex: 0 0 70px;
+  }
+}
+
+@media screen and (max-width: 370px) {
+  .todo-input {
+    font-size: 1rem;
+  }
+  .todo-added {
+    font-size: 20px;
+    padding: 5px;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  
 }

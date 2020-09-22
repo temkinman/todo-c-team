@@ -10,14 +10,14 @@
   <body>
     <div class="container">
       <div class="top-todo">
-        <h1>Todo list</h1>
+        <h1 class="name-app">Todo list</h1>
         <div class="add-todo">
           <input type="text" class="todo-input" placeholder="type todo" id="newTodo" minlength = 3/>
           <button class="add-button" id="add-todo">add</button>
         </div>
       </div>
       <div class="todos">
-        <ul id="todos-list">
+        <ul id="todos-list" class="todos-list">
           <!-- <li class="todo-added">
             <input type="checkbox" />
             <span>сходить в магазин</span>
@@ -36,9 +36,9 @@
         </ul>
       </div>
       <div class="show-diff-todos">
-        <button class="add-button" id="active">active</button>
-        <button class="add-button" id="complete" >completed</button>
-        <button class="add-button" id="all">all</button>
+        <button class="add-button mr-5" id="active">active</button>
+        <button class="add-button mr-5" id="complete" >completed</button>
+        <button class="add-button mr-5" id="all">all</button>
       </div>
     </div>
     <script src="./js/myscript.js"></script>
