@@ -3,109 +3,182 @@ const getId = (() => {
   return () => (globalID += 1);
 })();
 
-let todoList = [
-  { id: getId(), title: "learning JS", isComplete: false },
-  { id: getId(), title: "learning HTML", isComplete: false },
-  { id: getId(), title: "learning CSS", isComplete: false },
-];
+let state = {
+  todos: [
+    { id: getId(), title: "learning JS", isComplete: false },
+    { id: getId(), title: "learning HTML", isComplete: true },
+    { id: getId(), title: "learning CSS", isComplete: true },
+    { id: getId(), title: "learning React", isComplete: false },
+  ],
+  todoEdited: null,
+};
 
-document.getElementById("add-todo").addEventListener("click", prepareTodo);
-document.getElementById("active").addEventListener("click", showActiveTodos);
-document
-  .getElementById("complete")
-  .addEventListener("click", showCompleteTodos);
-document.getElementById("all").addEventListener("click", showAllTodos);
-document.addEventListener("DOMContentLoaded", showAllTodos);
-const todosContainer = document.getElementById("todos-list");
+const setState = (newStatePart) => {
+  state = { ...state, ...newStatePart };
+  const newHtml = render(state);
+  renderToDom(newHtml);
+};
 
-document.body.addEventListener(
-  "click",
-  function (e) {
-    if (e.target.className === "delete") {
-      removeFromView(e);
-    }
-    if (e.target.className === "complete") {
-      changeTodoStatusView(e);
-    }
-  },
-  false
-);
+const getState = () => {
+  return state;
+};
 
-function prepareTodo(){
-  const newTodoTitle = document.getElementById("newTodo").value;
-  if (newTodoTitle === "") return;
-  
-  const todo = { id: getId(), title: newTodoTitle, isComplete: false };
-  todoList = addTodo(todo, todoList);
-}
+const onSaveTitle = (formElement, event, todoId) => {
+  event.preventDefault();
+  const formData = getFormData(formElement);
 
-function addTodo(todo, todoList) {
-  todosContainer.appendChild(prepareForRenderTodo(todo));
-  return [...todoList, todo];
-}
+  setState({
+    todos: updateTitle(state.todos, todoId, formData.title),
+    todoEdited: null,
+  });
+};
 
-function prepareForRenderTodo(todo) {
-  const li = document.createElement("li");
+const getFormData = (formElement) => {
+  const formData = new FormData(formElement);
+  const data = {};
 
-  li.classList.add("todo-added");
-  li.setAttribute("index", todo.id);
-  li.innerHTML = `<input type="checkbox" class="complete" ${todo.isComplete ? "checked" : ""}/>
-                    <span class="comp ${todo.isComplete ? "strikeout" : ""}">${todo.title}</span>
-                    <img src="./images/trash-alt-solid.svg" alt="" class="delete" />`;
-  return li;
-}
-
-function removeFromView(e) {
-  const todoView = e.target.parentElement;
-  const todoId = +todoView.getAttribute("index");
-  todoView.remove();
-  todoList = removeTodo(todoId, todoList);
-}
-
-function removeTodo(todoId, todoList) {
-  return todoList.filter(todoItem => todoItem.id !== todoId);
-}
-
-function changeTodoStatusView(e) {
-  const todoView = e.target.parentElement;
-  const todoId = +todoView.getAttribute("index");
-  const isComplete = e.target.checked;
-
-  if (isComplete){
-    e.target.nextElementSibling.classList.add("strikeout");
+  for (const [key, value] of formData.entries()) {
+    data[key] = value;
   }
-  else {
-    e.target.nextElementSibling.classList.remove("strikeout");
-  }
-    
-  todoList = changeTodoStatus(todoId, isComplete, todoList);
-}
+  console.log(data);
+  return data;
+};
 
-function changeTodoStatus(todoId, isComplete, todoList) {
-  return todoList.map(todoItem => todoItem.id === todoId ? {...todoItem, isComplete} : todoItem)
-}
+const onAddNewTodo = (formElement, event) => {
+  event.preventDefault();
+  const formData = getFormData(formElement);
+  const newTodo = {
+    id: getId(),
+    title: formData.title,
+    isComplete: formData.isComplete === "on",
+  };
+  setState({
+    todos: addTodo(state.todos, newTodo),
+  });
+};
 
-function showAllTodos() {
-  clearAllTodos();
-  todoList.forEach((todoItem) =>
-    todosContainer.appendChild(prepareForRenderTodo(todoItem))
+const onRemoveTodo = (todoId) => {
+  setState({ todos: removeTodo(todoId) });
+};
+
+const onEdit = (todoId) => {
+  setState({ todoEdited: todoId });
+};
+
+const onChangeStatus = (todoId) => {
+  setState({
+    todos: updateStatus(state.todos, todoId),
+  });
+};
+
+const addTodo = (todos, newTodo) => {
+  return [...todos, newTodo];
+};
+
+const updateTitle = (todos, todoId, title) =>
+  todos.map((todo) => (todo.id === todoId ? { ...todo, title } : todo));
+
+const updateStatus = (todos, todoId) =>
+  todos.map((todo) =>
+    todo.id === todoId ? { ...todo, isComplete: !todo.isComplete } : todo
   );
+
+const removeTodo = (todoId) => state.todos.filter((todo) => todo.id !== todoId);
+
+const showActiveTodos = () => {
+  renderToDom('');
+  const activeTodos = filterStatusTodos(state.todos, false);
+  setState({todos: activeTodos});
 }
 
-function showActiveTodos() {
-  clearAllTodos();
-  todoList
-    .filter((todoItem) => todoItem.isComplete == false)
-    .forEach((todoItem) => todosContainer.appendChild(prepareForRenderTodo(todoItem)));
+const showCompletedTodos = () => {
+  renderToDom('');
+  const completedTodos = filterStatusTodos(state.todos, true);
+  setState({todos: completedTodos});
 }
 
-function showCompleteTodos() {
-  clearAllTodos();
-  todoList
-    .filter((todoItem) => todoItem.isComplete == true)
-    .forEach((todoItem) => todosContainer.appendChild(prepareForRenderTodo(todoItem)));
+const showAllTodos = () => {
+
 }
 
-function clearAllTodos() {
-  todosContainer.innerHTML = "";
-}
+const filterStatusTodos = (todos, status) => todos.filter(({isComplete}) => isComplete === status);
+
+const renderToDom = (template) => {
+  document.getElementById("app").innerHTML = template;
+};
+
+const render = ({ todos, todoEdited }) =>
+  `
+  <div class="top-todo">
+    <h1 class="name-app">Todo list</h1>
+    <form class="add-todo" onsubmit="onAddNewTodo(this, event)">
+      <input type="text"
+             class="todo-input"
+             placeholder="type todo"
+             id="newTodo"
+             minlength = 3
+             name="title"
+             />
+      <input type="checkbox"
+            class="complete"
+            name="isComplete"
+      />
+      <span>status</span>
+      <button type="submit" class="add-button" id="add-todo">add</button>
+    </form>
+  </div>
+  <div class="todos">
+    <ul id="todos-list" class="todos-list">
+      ${todos
+        .map((todo) =>
+          todo.id == todoEdited
+            ? `
+        <li class="todo-added" id="${todo.id}">
+          <form onsubmit="onSaveTitle(this, event, ${todo.id})">  
+            <input type="checkbox" 
+                class="complete" ${todo.isComplete ? "checked" : ""}
+                name="isComplete"
+            />
+            <input type="text"
+                   value="${todo.title}"
+                   name="title"
+                   class=${todo.isComplete ? "strikeout" : ""}
+            />
+            <button type="submit">save</button>
+          </form>  
+          <img src="./images/trash-alt-solid.svg" alt="" class="delete" onclick="onRemoveTodo(${
+            todo.id
+          })"/>
+        
+        </li>
+        `
+            : `
+        <li class="todo-added" id="${todo.id}">
+          <input type="checkbox"
+                onchange="onChangeStatus(${todo.id})"      
+                style = "color:red"/  ${todo.isComplete ? "checked" : ""}>
+          <span class="complete ${todo.isComplete ? "strikeout" : ""}">${
+                todo.title
+              }</span>
+          <button onclick="onEdit(${todo.id})">edit</button>
+          <img src="./images/trash-alt-solid.svg" alt="" class="delete" onclick="onRemoveTodo(${
+            todo.id
+          })"/>
+        </li>
+        `
+        )
+        .join("")}
+    </ul>
+  </div>
+  <div class="show-diff-todos">
+    <button class="add-button mr-5" id="active" onclick="showActiveTodos()">active</button>
+    <button class="add-button mr-5" id="complete" onclick="showCompletedTodos()">completed</button>
+    <button class="add-button mr-5" id="all">all</button>
+  </div>
+`;
+
+const main = () => {
+  document.getElementById("app").innerHTML = render(state);
+};
+
+main();
