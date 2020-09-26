@@ -40,13 +40,13 @@ const getFormData = (formElement) => {
   for (const [key, value] of formData.entries()) {
     data[key] = value;
   }
-  console.log(data);
   return data;
 };
 
 const onAddNewTodo = (formElement, event) => {
   event.preventDefault();
   const formData = getFormData(formElement);
+  if( formData.title.length === 0) return;
   const newTodo = {
     id: getId(),
     title: formData.title,
@@ -85,20 +85,25 @@ const updateStatus = (todos, todoId) =>
 
 const removeTodo = (todoId) => state.todos.filter((todo) => todo.id !== todoId);
 
-const showActiveTodos = () => {
-  renderToDom('');
-  const activeTodos = filterStatusTodos(state.todos, false);
-  setState({todos: activeTodos});
+const onShowActiveTodos = () => {
+  const activeTodosHtml = render({todos: filterStatusTodos(state.todos, false)});
+  renderToDom(activeTodosHtml);
+  document.getElementById('active').classList.add('active');
+  // renderToDom('');
+  // setState();
 }
 
-const showCompletedTodos = () => {
-  renderToDom('');
-  const completedTodos = filterStatusTodos(state.todos, true);
-  setState({todos: completedTodos});
+const onShowCompletedTodos = () => {
+  const activeTodosHtml = render({todos: filterStatusTodos(state.todos, true)});
+  renderToDom(activeTodosHtml);
+  document.getElementById('complete').classList.add('active');
+  // renderToDom('');
+  // setState({todos: filterStatusTodos(state.todos, true)});
 }
 
-const showAllTodos = () => {
-
+const onShowAllTodos = () => {
+  setState(state);
+  document.getElementById('all').classList.add('active');
 }
 
 const filterStatusTodos = (todos, status) => todos.filter(({isComplete}) => isComplete === status);
@@ -120,10 +125,10 @@ const render = ({ todos, todoEdited }) =>
              name="title"
              />
       <input type="checkbox"
-            class="complete"
+            class="addStatus"
             name="isComplete"
       />
-      <span>status</span>
+      <span class="addStatus">isComplete</span>
       <button type="submit" class="add-button" id="add-todo">add</button>
     </form>
   </div>
@@ -134,7 +139,7 @@ const render = ({ todos, todoEdited }) =>
           todo.id == todoEdited
             ? `
         <li class="todo-added" id="${todo.id}">
-          <form onsubmit="onSaveTitle(this, event, ${todo.id})">  
+          <form onsubmit="onSaveTitle(this, event, ${todo.id})" class="formEdit">  
             <input type="checkbox" 
                 class="complete" ${todo.isComplete ? "checked" : ""}
                 name="isComplete"
@@ -142,13 +147,16 @@ const render = ({ todos, todoEdited }) =>
             <input type="text"
                    value="${todo.title}"
                    name="title"
-                   class=${todo.isComplete ? "strikeout" : ""}
+                   class=formEdit-title ${todo.isComplete ? "strikeout" : ""}
             />
-            <button type="submit">save</button>
-          </form>  
-          <img src="./images/trash-alt-solid.svg" alt="" class="delete" onclick="onRemoveTodo(${
-            todo.id
-          })"/>
+            <button type="submit" class="saveBtn"><img src="./images/save.png" alt="" class="save edit"></button>
+            
+          </form> 
+          <div class="icons">
+            <img src="./images/trash-alt-solid.svg" alt="" class="delete" onclick="onRemoveTodo(${
+              todo.id
+            })"/>
+          </div>
         
         </li>
         `
@@ -160,10 +168,12 @@ const render = ({ todos, todoEdited }) =>
           <span class="complete ${todo.isComplete ? "strikeout" : ""}">${
                 todo.title
               }</span>
-          <button onclick="onEdit(${todo.id})">edit</button>
-          <img src="./images/trash-alt-solid.svg" alt="" class="delete" onclick="onRemoveTodo(${
-            todo.id
-          })"/>
+          <div class="icons">
+            <img src="./images/pencil.png" alt="" class="edit" onclick="onEdit(${todo.id})">
+            <img src="./images/trash-alt-solid.svg" alt="" class="delete" onclick="onRemoveTodo(${
+              todo.id
+            })"/>
+          </div>
         </li>
         `
         )
@@ -171,9 +181,9 @@ const render = ({ todos, todoEdited }) =>
     </ul>
   </div>
   <div class="show-diff-todos">
-    <button class="add-button mr-5" id="active" onclick="showActiveTodos()">active</button>
-    <button class="add-button mr-5" id="complete" onclick="showCompletedTodos()">completed</button>
-    <button class="add-button mr-5" id="all">all</button>
+    <button class="add-button mr-5" id="active" onclick="onShowActiveTodos()">active</button>
+    <button class="add-button mr-5" id="complete" onclick="onShowCompletedTodos()">completed</button>
+    <button class="add-button mr-5" id="all" onclick="onShowAllTodos()">all</button>
   </div>
 `;
 

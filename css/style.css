@@ -17,6 +17,11 @@ body {
   font-size: 4rem;
 }
 
+.addStatus {
+  margin-top: auto;
+  margin-right: 5px;
+  font-size: 1.2rem;
+}
 .add-todo {
   display: flex;
   margin: 15px;
@@ -46,7 +51,7 @@ body {
   cursor: pointer;
 }
 
-.add-button:hover {
+.add-button:hover, .active {
   background-color: gray;
   color: white;
   transition: .5s;
@@ -84,7 +89,7 @@ body {
   box-shadow: 5px 6px 1px rgba(0, 0, 0, 0.3);
 }
 
-.todo-added:hover .delete {
+.todo-added:hover .icons {
   visibility: visible;
 }
 
@@ -92,12 +97,39 @@ body {
   margin-bottom: 0;
   margin-right: 10px;
 }
-.delete {
+.icons {
   visibility: hidden;
-  width: 15px;
-  cursor: pointer;
-  flex: 0 0 17px;
+  display: flex;
   margin-left: auto;
+}
+
+.edit {
+  width: 19px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.delete {
+  width: 17px;
+  cursor: pointer;
+}
+
+.saveBtn {
+  background-color: transparent;
+  border: 0;
+}
+
+.formEdit {
+  display: flex;
+  align-items: center;
+}
+
+.formEdit-title {
+  padding: 7px;
+  border: 2px solid #24245aa1;
+  font-size: 1rem;
+  border-radius: 5px;
+  color: #1310dc;
 }
 
 .show-diff-todos {
@@ -153,7 +185,7 @@ body {
   border: 2px solid red;
 }
 
-@media screen and (max-width: 405px) {
+@media screen and (max-width: 460px) {
   .add-button {
     flex: 0 0 70px;
   }
