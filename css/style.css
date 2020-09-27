@@ -7,7 +7,7 @@ body {
   display: flex;
   margin: 0 auto;
   flex-direction: column;
-  max-width: 600px;
+  max-width: 900px;
   background-color: lightblue;
 }
 
@@ -18,9 +18,10 @@ body {
 }
 
 .addStatus {
-  margin-top: auto;
-  margin-right: 5px;
+  display: flex;
+  align-self: flex-end;
   font-size: 1.2rem;
+  margin-right: 5px;
 }
 .add-todo {
   display: flex;
@@ -59,7 +60,6 @@ body {
 
 .top-todo {
   display: flex;
-  overflow: auto;
   flex-direction: column;
   text-align: center;
 }
@@ -117,11 +117,14 @@ body {
 .saveBtn {
   background-color: transparent;
   border: 0;
+  margin-right: 0;
 }
 
 .formEdit {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  flex: 1 1 0;
 }
 
 .formEdit-title {
@@ -130,6 +133,7 @@ body {
   font-size: 1rem;
   border-radius: 5px;
   color: #1310dc;
+  width: 80% !important;
 }
 
 .show-diff-todos {
