@@ -189,6 +189,12 @@ body {
   border: 2px solid red;
 }
 
+.active-todos {
+  color: #970a45;
+  font-size: 1.2rem;
+  margin: 10px 15px;
+}
+
 @media screen and (max-width: 460px) {
   .add-button {
     flex: 0 0 70px;
