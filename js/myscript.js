@@ -17,7 +17,7 @@ let state = {
 const setState = (newStatePart) => {
   state = { ...state, ...newStatePart };
   const {undoStack, ...allState} = newStatePart;
-  state.undoStack.push(allState);
+  if (state.todoEdited === null) state.undoStack.push(allState);
 
   const newHtml = render(state);
   renderToDom(newHtml);
@@ -34,7 +34,7 @@ const setStateUndo = () => {
   const newUndoStack = state.undoStack[state.undoStack.length - 1];
   state.todos = newUndoStack.todos;
   // {state, newUndoStack}
-  
+
   // const newState = {...state, newUndoStack};
   // setState(newState);
   const newHtml = render(newUndoStack);
