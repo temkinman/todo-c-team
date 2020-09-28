@@ -4,41 +4,61 @@ const getId = (() => {
 })();
 
 let state = {
-  todos: [
+  todos: [/*
     { id: getId(), title: "learning JS", isComplete: false },
     { id: getId(), title: "learning HTML", isComplete: true },
     { id: getId(), title: "learning CSS", isComplete: true },
-    { id: getId(), title: "learning React", isComplete: false },
+    { id: getId(), title: "learning React", isComplete: false },*/
   ],
   todoEdited: null,
-  undoStack: [],
 };
 
-const setState = (newStatePart) => {
-  state = { ...state, ...newStatePart };
-  const {undoStack, ...allState} = newStatePart;
-  if (state.todoEdited === null) state.undoStack.push(allState);
+let history = {
+  allStates: [],
+  cursor: -1,
+}
 
+//historyFlag означает если вы сетаете state из ф-ции redoHistory или undoHistory, то измененый state не будет ложится заново в history 
+const setState = (newStatePart, historyFlag = false) => {
+  state = { ...state, ...newStatePart };
+  if (!historyFlag)addToHistory(state);
+  
   const newHtml = render(state);
   renderToDom(newHtml);
 };
 
-const setInitialState = () => {
-  state.undoStack.push(state);
+const addToHistory = (newState) => {
+  if (state.todoEdited === null) {
+    history.allStates.splice(history.cursor + 1);
+    history.allStates.push(newState);
+    history.cursor = history.allStates.length - 1;
+  }
 }
 
-setInitialState();
+const undoHistory = () => {
+  const historyFlag = true;
+  let newState = null;
 
-const setStateUndo = () => {
-  state.undoStack.pop();
-  const newUndoStack = state.undoStack[state.undoStack.length - 1];
-  state.todos = newUndoStack.todos;
-  // {state, newUndoStack}
+  if(history.cursor === 0) {
+    history.cursor -= 1;
+    setState({todos:[]}, historyFlag);
+  }
 
-  // const newState = {...state, newUndoStack};
-  // setState(newState);
-  const newHtml = render(newUndoStack);
-  renderToDom(newHtml); 
+  if(history.cursor !== -1){
+    history.cursor -= 1;
+    newState = history.allStates[history.cursor];
+    setState(newState, historyFlag);
+  }
+}
+
+const redoHistory = () => {
+  const historyFlag = true;
+  let newState = null;
+  if(history.cursor < history.allStates.length - 1) {
+    history.cursor += 1;
+    newState = history.allStates[history.cursor];
+    setState(newState, historyFlag);
+  }
 }
 
 const getState = () => {
@@ -113,8 +133,6 @@ const onShowActiveTodos = () => {
   });
   renderToDom(activeTodosHtml);
   document.getElementById("active").classList.add("active");
-  // renderToDom('');
-  // setState();
 };
 
 const onShowCompletedTodos = () => {
@@ -123,12 +141,11 @@ const onShowCompletedTodos = () => {
   });
   renderToDom(completedTodosHtml);
   document.getElementById("complete").classList.add("active");
-  // renderToDom('');
-  // setState({todos: filterStatusTodos(state.todos, true)});
 };
 
 const onShowAllTodos = () => {
-  setState(state);
+  const allTodosHtml = render(state);
+  renderToDom(allTodosHtml);
   document.getElementById("all").classList.add("active");
 };
 
@@ -139,23 +156,15 @@ const countActiveTodos = (todos) => {
   return filterStatusTodos(todos, false).length;
 };
 
-const undoStack = () => {
-  const newUndostack = state.undoStack[state.undoStack.length - 1];
-  console.log('undostack in function');
-  console.log(newUndostack);
-  // state.undoStack.pop();
-  console.log('-------------');
-  console.log({...newUndostack});
-
-  setState({...state, ...newUndostack});
-}
-
 const renderToDom = (template) => {
   document.getElementById("app").innerHTML = template;
 };
 
-const render = ({ todos, todoEdited }) => {
+const render = ({ todos, todoEdited = null }) => {
   const activeTodos = countActiveTodos(state.todos);
+  const undoEnabled = ( history.allStates.length === 0 || todos.length === 0 ) ? 'disabled' : '';
+  const redoEnabled = ( history.allStates.length === 0 || history.cursor === history.allStates.length - 1 ) ? 'disabled' : '';
+
   return  `
   <div class="top-todo">
     <h1 class="name-app">Todo list</h1>
@@ -232,9 +241,9 @@ const render = ({ todos, todoEdited }) => {
     <button class="add-button mr-5" id="complete" onclick="onShowCompletedTodos()">completed</button>
     <button class="add-button mr-5" id="all" onclick="onShowAllTodos()">all</button>
   </div>
-  <div>
-    <button onclick="">redo</button>
-    <button onclick="setStateUndo()">undo</button>
+  <div class="historyBtns">
+    <button onclick="redoHistory()" ${redoEnabled} class="mr-5">redo</button>
+    <button onclick="undoHistory()" ${undoEnabled}>undo</button>
   </div>
   <span class="active-todos">active todos: ${activeTodos}</span>
 `;
