@@ -200,6 +200,10 @@ body {
   justify-content: center;
 }
 
+.redo, .undo {
+  width: 40px;
+}
+
 @media screen and (max-width: 460px) {
   .add-button {
     flex: 0 0 70px;

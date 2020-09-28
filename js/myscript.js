@@ -242,8 +242,8 @@ const render = ({ todos, todoEdited = null }) => {
     <button class="add-button mr-5" id="all" onclick="onShowAllTodos()">all</button>
   </div>
   <div class="historyBtns">
-    <button onclick="redoHistory()" ${redoEnabled} class="mr-5">redo</button>
-    <button onclick="undoHistory()" ${undoEnabled}>undo</button>
+    <button onclick="redoHistory()" ${redoEnabled} class="mr-5"><img src="./images/redo.png" alt="" class="redo"></button>
+    <button onclick="undoHistory()" ${undoEnabled}><img src="./images/undo.png" alt="" class="undo"></button>
   </div>
   <span class="active-todos">active todos: ${activeTodos}</span>
 `;
