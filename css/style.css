@@ -17,16 +17,21 @@ body {
   font-size: 4rem;
 }
 
+.add-todo-block {
+  flex: 1 1 0;
+  margin-right: 5px;
+  height: 46px;
+}
+
 .addStatus {
-  display: flex;
   align-self: flex-end;
   font-size: 1.2rem;
   margin-right: 5px;
 }
 .add-todo {
   display: flex;
-  margin: 15px;
   height: 35px;
+  padding: 40px 15px;
 }
 
 .todo-input {
@@ -38,24 +43,35 @@ body {
   border-radius: 5px;
   outline: none;
   margin-right: 5px;
+  width: 98%;
 }
 
 .todo-input:focus {
   border: 1px solid blue;
 }
 
-.add-button {
+.button {
   flex: 0 0 110px;
   border-radius: 5px;
   border: 1px solid gray;
   font-size: 1.3rem;
   cursor: pointer;
+  height: 46px;
 }
 
-.add-button:hover, .active {
+.button:hover, .active {
   background-color: gray;
   color: white;
   transition: .5s;
+}
+
+.button:disabled {
+  opacity: 0.5;
+}
+
+.add-todo-status {
+  display: flex;
+  margin-top: 5px;
 }
 
 .top-todo {
@@ -63,6 +79,11 @@ body {
   flex-direction: column;
   text-align: center;
 }
+
+.todos {
+  margin-top: 20px;
+}
+
 .todos-list {
   margin: 0;
   padding: 0px 15px;
