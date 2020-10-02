@@ -24,8 +24,11 @@ const setState = (newStatePart, historyFlag = false) => {
   state = { ...state, ...newStatePart };
 
   if (!historyFlag && state.todoEdited === null) {
-    state.history.allStates = addHistory(state);
-    state.history.cursor = state.history.allStates.length - 1;
+    state = {...state, history: {...state.history,
+                                 allStates: addHistory(state),
+                                 cursor: state.history.allStates.length - 1,
+                                },
+            };
   }
   renderWithFilter(state);
 };
@@ -39,7 +42,7 @@ const renderWithFilter = (state) => {
     const newHtml = render(state);
     renderToDom(newHtml);
   }
-}
+};
 
 const addHistory = ({ history, todos }) => [...history.allStates, todos];
 
@@ -153,9 +156,9 @@ const setFilter = (filter) => {
 
 const filterStatusTodos = ({ todos, filter }) => {
   if (filter === "all") return state;
-  
+
   const isActive = filter === "active" ? false : true;
-  
+
   const filteredTodos = todos.filter(
     ({ isComplete }) => isComplete === isActive
   );
@@ -165,7 +168,8 @@ const filterStatusTodos = ({ todos, filter }) => {
 
 const countActiveTodos = () => {
   const notFilteredState = getState();
-  return notFilteredState.todos.filter(({ isComplete }) => isComplete === false).length;
+  return notFilteredState.todos.filter(({ isComplete }) => isComplete === false)
+    .length;
 };
 
 const renderToDom = (template) => {
